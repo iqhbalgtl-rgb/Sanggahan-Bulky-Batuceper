@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sanggahan Bulky - GTL Batuceper Hub</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-[#0b0f19] text-gray-100 min-h-screen font-sans">
+
+    <!-- ================= HALAMAN 1: FORMULIR ================= -->
+    <div id="formPage" class="max-w-xl mx-auto p-4 sm:p-6 pb-12">
+        <div class="flex justify-between items-center mb-6 pt-2">
+            <div>
+                <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold">GTL BATUCEPER HUB</span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Sanggahan Bulky</h1>
+                <p class="text-xs sm:text-sm text-gray-400">Formulir sanggahan paket bulky — GTL Batuceper Hub</p>
+            </div>
+            <button onclick="requestAdminAccess()" class="bg-gray-800 hover:bg-gray-700 text-white text-xs sm:text-sm font-medium py-2 px-3 rounded-lg border border-gray-700 transition flex items-center gap-2">
+                <i class="fa-solid fa-lock text-orange-400"></i> Dashboard
+            </button>
+        </div>
+
+        <div class="bg-amber-950/40 border border-amber-600/50 rounded-xl p-4 mb-6 text-amber-200 text-xs sm:text-sm">
+            <div class="flex items-center gap-2 font-bold mb-1 text-amber-400">
+                <i class="fa-solid fa-triangle-exclamation"></i> WAJIB DIPERHATIKAN !!!
+            </div>
+            <ol class="list-decimal list-inside space-y-1 text-amber-200/90 pl-1">
+                <li>Upload sanggahan maksimal H+1 dari tanggal paket terkirim/delivered</li>
+                <li>No Resi tidak boleh ada yang salah dan kurang/lebih</li>
+                <li>Status paket wajib DELIVERED</li>
+            </ol>
+        </div>
+
+        <form id="sanggahanForm" onsubmit="handleFormSubmit(event)" class="space-y-4">
+            <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4">
+                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">NAMA (HURUF BESAR) *</label>
+                <input type="text" id="nama" required placeholder="NAMA LENGKAP" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500 uppercase">
+            </div>
+
+            <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4">
+                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">ID RIDER *</label>
+                <input type="text" id="idRider" required placeholder="ID RIDER" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500">
+            </div>
+
+            <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4">
+                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">TANGGAL *</label>
+                <input type="date" id="tanggal" required class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:border-orange-500">
+            </div>
+
+            <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4">
+                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-2">NOMOR AWB (HURUF BESAR) *</label>
+                <input type="text" id="noAwb" required placeholder="Contoh: GTL72123456789" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-3 text-white placeholder-gray-600 focus:outline-none focus:border-orange-500 uppercase">
+            </div>
+
+            <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4">
+                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Upload Foto Terlihat Nomer Resi *</label>
+                <p class="text-[11px] text-gray-400 mb-3">Wajib via kamera langsung — galeri tidak diizinkan.</p>
+                <div id="boxResi" onclick="openCamera('resi')" class="border-2 border-dashed border-orange-500/40 bg-orange-500/5 hover:bg-orange-500/10 rounded-xl p-6 text-center cursor-pointer transition">
+                    <i class="fa-solid fa-camera text-orange-500 text-2xl mb-2"></i>
+                    <div class="text-orange-400 font-semibold text-sm">Buka Kamera</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Foto + timestamp & lokasi otomatis</div>
+                </div>
+                <div id="previewResiContainer" class="hidden mt-3 text-center">
+                    <img id="previewResi" class="max-h-48 mx-auto rounded-lg border border-gray-700 mb-2 cursor-pointer" onclick="openImageModal(this.src)">
+                    <button type="button" onclick="openCamera('resi')" class="text-xs text-orange-400 underline">Ambil Ulang Foto</button>
+                </div>
+            </div>
+
+            <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4">
+                <label class="block text-xs font-bold text-gray-300 uppercase tracking-wider mb-1">Upload Foto Terlihat Dalam Pokoyake *</label>
+                <p class="text-[11px] text-gray-400 mb-3">Wajib via kamera langsung — galeri tidak diizinkan.</p>
+                <div id="boxPokoyake" onclick="openCamera('pokoyake')" class="border-2 border-dashed border-orange-500/40 bg-orange-500/5 hover:bg-orange-500/10 rounded-xl p-6 text-center cursor-pointer transition">
+                    <i class="fa-solid fa-camera text-orange-500 text-2xl mb-2"></i>
+                    <div class="text-orange-400 font-semibold text-sm">Buka Kamera</div>
+                    <div class="text-[11px] text-gray-400 mt-1">Foto + timestamp & lokasi otomatis</div>
+                </div>
+                <div id="previewPokoyakeContainer" class="hidden mt-3 text-center">
+                    <img id="previewPokoyake" class="max-h-48 mx-auto rounded-lg border border-gray-700 mb-2 cursor-pointer" onclick="openImageModal(this.src)">
+                    <button type="button" onclick="openCamera('pokoyake')" class="text-xs text-orange-400 underline">Ambil Ulang Foto</button>
+                </div>
+            </div>
+
+            <div class="text-xs text-gray-400 flex items-center gap-2 pt-2">
+                <i class="fa-regular fa-clock text-orange-400"></i> Setiap foto otomatis diberi waktu, koordinat & alamat lokasi.
+            </div>
+
+            <button type="submit" id="submitBtn" class="w-full bg-gradient-to-r from-orange-600 to-orange-500 hover:from-orange-500 hover:to-orange-400 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg transition duration-200">
+                Kirim Sanggahan
+            </button>
+        </form>
+    </div>
+
+    <!-- ================= HALAMAN 2: DASHBOARD MONITORING ================= -->
+    <div id="dashboardPage" class="hidden max-w-7xl mx-auto p-4 sm:p-6 pb-12">
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6 pt-2">
+            <div>
+                <span class="text-xs uppercase tracking-wider text-gray-400 font-semibold">GTL BATUCEPER HUB</span>
+                <h1 class="text-2xl sm:text-3xl font-extrabold text-white">Dashboard Sanggahan Bulky</h1>
+            </div>
+            <button onclick="switchPage('form')" class="bg-gray-800 hover:bg-gray-700 text-white text-xs sm:text-sm font-medium py-2 px-4 rounded-lg border border-gray-700 transition flex items-center gap-2">
+                <i class="fa-solid fa-arrow-left"></i> Formulir
+            </button>
+        </div>
+
+        <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 mb-6 space-y-4">
+            <div class="grid grid-cols-1 sm:grid-cols-4 gap-3">
+                <div class="sm:col-span-2 relative">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-3.5 text-gray-500"></i>
+                    <input type="text" id="searchInput" oninput="filterData()" placeholder="Cari nama, ID rider, AWB, atau ID sanggahan..." class="w-full bg-gray-950 border border-gray-700 rounded-lg pl-10 pr-4 py-2.5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-orange-500">
+                </div>
+                <div>
+                    <input type="date" id="filterStart" onchange="filterData()" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500">
+                </div>
+                <div>
+                    <select id="filterStatus" onchange="filterData()" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-3 py-2.5 text-sm text-white focus:outline-none focus:border-orange-500">
+                        <option value="">Semua Status</option>
+                        <option value="Pending">Pending</option>
+                        <option value="Approved">Approved</option>
+                        <option value="Rejected">Rejected</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-gray-800 text-xs">
+                <div class="font-bold text-gray-300">
+                    TOTAL SANGGAHAN: <span id="totalCount" class="text-orange-400 text-sm">0</span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="loadDashboardData()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 transition"><i class="fa-solid fa-rotate"></i> Refresh</button>
+                    <button onclick="exportCSV()" class="bg-gray-800 hover:bg-gray-700 text-gray-300 px-3 py-1.5 rounded-lg border border-gray-700 transition"><i class="fa-solid fa-file-csv"></i> Ekspor CSV</button>
+                </div>
+            </div>
+        </div>
+
+        <div id="dataListContainer" class="space-y-4">
+            <div class="text-center py-12 text-gray-500">Memuat data dari Google Sheets...</div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL KAMERA ================= -->
+    <div id="cameraModal" class="fixed inset-0 bg-black/90 z-50 hidden flex flex-col items-center justify-center p-4">
+        <div class="relative w-full max-w-md bg-gray-900 border border-gray-800 rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-3 bg-gray-950 flex justify-between items-center border-b border-gray-800">
+                <span class="text-xs font-bold text-gray-300 uppercase tracking-wider">Ambil Foto Real-Time</span>
+                <button onclick="closeCamera()" class="text-gray-400 hover:text-white px-2 py-1 text-sm"><i class="fa-solid fa-xmark text-lg"></i></button>
+            </div>
+            <div class="relative bg-black flex items-center justify-center aspect-[3/4]">
+                <video id="cameraVideo" autoplay playsinline class="w-full h-full object-cover"></video>
+                <canvas id="cameraCanvas" class="hidden"></canvas>
+            </div>
+            <div class="p-4 bg-gray-950 flex justify-center">
+                <button type="button" onclick="capturePhoto()" class="bg-orange-500 hover:bg-orange-400 text-white font-bold py-3 px-8 rounded-full shadow-lg transition flex items-center gap-2">
+                    <i class="fa-solid fa-camera"></i> Jepret Foto
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL PASSWORD ADMIN ================= -->
+    <div id="passwordModal" class="fixed inset-0 bg-black/80 z-50 hidden flex items-center justify-center p-4">
+        <div class="bg-gray-900 border border-gray-800 rounded-2xl p-6 w-full max-w-sm text-center shadow-2xl">
+            <div class="w-12 h-12 bg-orange-500/10 border border-orange-500/30 text-orange-400 rounded-full flex items-center justify-center mx-auto mb-4 text-xl">
+                <i class="fa-solid fa-user-shield"></i>
+            </div>
+            <h3 class="text-lg font-bold text-white mb-1">Akses Admin Dashboard</h3>
+            <p class="text-xs text-gray-400 mb-4">Masukkan kode password untuk membuka halaman monitoring.</p>
+            <input type="password" id="adminPasswordInput" placeholder="Masukkan Password" class="w-full bg-gray-950 border border-gray-700 rounded-lg px-4 py-2.5 text-white text-center focus:outline-none focus:border-orange-500 mb-4">
+            <div class="flex gap-2">
+                <button onclick="closePasswordModal()" class="w-1/2 bg-gray-800 hover:bg-gray-700 text-gray-300 font-semibold py-2 rounded-lg text-sm transition">Batal</button>
+                <button onclick="verifyPassword()" class="w-1/2 bg-orange-600 hover:bg-orange-500 text-white font-semibold py-2 rounded-lg text-sm transition">Masuk</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= MODAL LIGHTBOX FOTO (PRATINJAU TANPA TAB BARU) ================= -->
+    <div id="imageModal" class="fixed inset-0 bg-black/95 z-50 hidden flex items-center justify-center p-4" onclick="closeImageModal()">
+        <div class="relative max-w-4xl max-h-[90vh] overflow-hidden rounded-xl border border-gray-800">
+            <img id="imageModalSrc" src="" class="max-w-full max-h-[85vh] object-contain mx-auto">
+            <button onclick="closeImageModal()" class="absolute top-3 right-3 bg-black/60 text-white w-8 h-8 rounded-full flex items-center justify-center border border-gray-700 hover:bg-black"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+    </div>
+
+    <!-- ================= JAVASCRIPT UTAMA ================= -->
+    <script>
+        const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzdt5_rWuL7IifbqtI33F_DFRmwDHByTy-ToRFFrGC2PyqVcrdsTLFobfjRnNoHa33Bqg/exec";
+        const ADMIN_PASSWORD = "admin123"; // Ganti password admin di sini jika perlu
+
+        let currentActiveType = '';
+        let mediaStream = null;
+        let photoResiBase64 = '';
+        let photoPokoyakeBase64 = '';
+        let globalDataList = [];
+        let currentLocationString = "Batuceper, Tangerang, Banten, Indonesia";
+
+        document.getElementById('tanggal').valueAsDate = new Date();
+
+        function requestAdminAccess() {
+            document.getElementById('passwordModal').classList.remove('hidden');
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('adminPasswordInput').focus();
+        }
+
+        function closePasswordModal() {
+            document.getElementById('passwordModal').classList.add('hidden');
+        }
+
+        function verifyPassword() {
+            const input = document.getElementById('adminPasswordInput').value;
+            if (input === ADMIN_PASSWORD) {
+                closePasswordModal();
+                switchPage('dashboard');
+            } else {
+                alert("Password salah! Akses ditolak.");
+            }
+        }
+
+        function switchPage(page) {
+            if(page === 'form') {
+                document.getElementById('formPage').classList.remove('hidden');
+                document.getElementById('dashboardPage').classList.add('hidden');
+            } else {
+                document.getElementById('formPage').classList.add('hidden');
+                document.getElementById('dashboardPage').classList.remove('hidden');
+                loadDashboardData();
+            }
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(position => {
+                const lat = position.coords.latitude;
+                const lon = position.coords.longitude;
+                currentLocationString = `Lat: ${lat.toFixed(5)}, Lon: ${lon.toFixed(5)} (Batuceper, Tangerang)`;
+            }, () => {});
+        }
+
+        async function openCamera(type) {
+            currentActiveType = type;
+            document.getElementById('cameraModal').classList.remove('hidden');
+            try {
+                mediaStream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } });
+                document.getElementById('cameraVideo').srcObject = mediaStream;
+            } catch (err) {
+                alert("Gagal mengakses kamera: " + err.message);
+                closeCamera();
+            }
+        }
+
+        function closeCamera() {
+            if (mediaStream) {
+                mediaStream.getTracks().forEach(track => track.stop());
+            }
+            document.getElementById('cameraModal').classList.add('hidden');
+        }
+
+        function capturePhoto() {
+            const video = document.getElementById('cameraVideo');
+            const canvas = document.getElementById('cameraCanvas');
+            const context = canvas.getContext('2d');
+
+            canvas.width = video.videoWidth || 640;
+            canvas.height = video.videoHeight || 480;
+
+            context.drawImage(video, 0, 0, canvas.width, canvas.height);
+
+            const now = new Date();
+            const timeString = now.toLocaleString('id-ID', { 
+                weekday: 'short', 
+                year: 'numeric', 
+                month: 'short', 
+                day: 'numeric', 
+                hour: '2-digit', 
+                minute: '2-digit', 
+                second: '2-digit' 
+            });
+
+            context.fillStyle = "rgba(0, 0, 0, 0.75)";
+            context.fillRect(10, canvas.height - 70, canvas.width - 20, 55);
+
+            context.fillStyle = "#ffffff";
+            context.font = "bold 15px Arial";
+            context.fillText("WAKTU: " + timeString, 20, canvas.height - 42);
+
+            context.font = "12px Arial";
+            context.fillStyle = "#ffa500";
+            context.fillText("LOKASI: " + currentLocationString, 20, canvas.height - 22);
+
+            const base64Image = canvas.toDataURL('image/jpeg', 0.85);
+
+            if (currentActiveType === 'resi') {
+                photoResiBase64 = base64Image;
+                document.getElementById('previewResi').src = base64Image;
+                document.getElementById('previewResiContainer').classList.remove('hidden');
+                document.getElementById('boxResi').classList.add('hidden');
+            } else {
+                photoPokoyakeBase64 = base64Image;
+                document.getElementById('previewPokoyake').src = base64Image;
+                document.getElementById('previewPokoyakeContainer').classList.remove('hidden');
+                document.getElementById('boxPokoyake').classList.add('hidden');
+            }
+
+            closeCamera();
+        }
+
+        function openImageModal(src) {
+            document.getElementById('imageModalSrc').src = src;
+            document.getElementById('imageModal').classList.remove('hidden');
+        }
+
+        function closeImageModal() {
+            document.getElementById('imageModal').classList.add('hidden');
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault();
+
+            if (!photoResiBase64 || !photoPokoyakeBase64) {
+                alert("Harap ambil kedua foto (Resi & Pokoyake) melalui kamera!");
+                return;
+            }
+
+            const btn = document.getElementById('submitBtn');
+            btn.disabled = true;
+            btn.innerText = "Mengirim Data...";
+
+            const payload = {
+                action: 'create',
+                nama: document.getElementById('nama').value.toUpperCase(),
+                idRider: document.getElementById('idRider').value,
+                tanggal: document.getElementById('tanggal').value,
+                noAwb: document.getElementById('noAwb').value.toUpperCase(),
+                fotoResi: photoResiBase64,
+                fotoPokoyake: photoPokoyakeBase64,
+                lokasi: currentLocationString
+            };
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            })
+            .then(() => {
+                alert("Sanggahan berhasil dikirim!");
+                location.reload();
+            })
+            .catch(err => {
+                console.error(err);
+                alert("Terjadi kesalahan koneksi.");
+                btn.disabled = false;
+                btn.innerText = "Kirim Sanggahan";
+            });
+        }
+
+        function loadDashboardData() {
+            const container = document.getElementById('dataListContainer');
+            container.innerHTML = `<div class="text-center py-12 text-gray-500">Memuat data terbaru...</div>`;
+
+            fetch(WEB_APP_URL)
+                .then(res => res.json())
+                .then(data => {
+                    globalDataList = data;
+                    renderDashboard(globalDataList);
+                })
+                .catch(err => {
+                    console.error(err);
+                    container.innerHTML = `<div class="text-center py-12 text-red-400">Gagal memuat data. Pastikan URL Apps Script sudah diatur.</div>`;
+                });
+        }
+
+        function updateStatus(id, newStatus) {
+            if (!confirm(`Ubah status sanggahan ${id} menjadi ${newStatus}?`)) return;
+            
+            const payload = { action: 'updateStatus', id: id, status: newStatus };
+            
+            const target = globalDataList.find(item => item.id === id);
+            if (target) target.status = newStatus;
+            renderDashboard(globalDataList);
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(() => loadDashboardData());
+        }
+
+        function deleteItem(id) {
+            if (!confirm(`HAPUS permanen data sanggahan ${id}?`)) return;
+
+            const payload = { action: 'delete', id: id };
+
+            globalDataList = globalDataList.filter(item => item.id !== id);
+            renderDashboard(globalDataList);
+
+            fetch(WEB_APP_URL, {
+                method: "POST",
+                mode: "no-cors",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload)
+            }).then(() => loadDashboardData());
+        }
+
+        function renderDashboard(data) {
+            const container = document.getElementById('dataListContainer');
+            document.getElementById('totalCount').innerText = data.length;
+
+            if (data.length === 0) {
+                container.innerHTML = `<div class="text-center py-12 text-gray-500">Belum ada data sanggahan.</div>`;
+                return;
+            }
+
+            container.innerHTML = data.map(item => {
+                let statusBadgeColor = "bg-amber-500/10 text-amber-400 border-amber-500/30";
+                if(item.status === 'Approved') statusBadgeColor = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
+                if(item.status === 'Rejected') statusBadgeColor = "bg-rose-500/10 text-rose-400 border-rose-500/30";
+
+                return `
+                <div class="bg-gray-900/60 border border-gray-800 rounded-xl p-4 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 hover:border-gray-700 transition">
+                    <div class="flex items-center gap-4">
+                        <div class="flex gap-2">
+                            <div onclick="openImageModal('${item.fotoResi}')" class="w-14 h-14 bg-gray-950 border border-gray-700 rounded-lg overflow-hidden cursor-pointer group relative flex-shrink-0">
+                                <img src="${item.fotoResi}" class="w-full h-full object-cover" alt="Resi">
+                                <span class="absolute inset-0 bg-black/50 flex items-center justify-center text-[9px] font-bold text-white opacity-0 group-hover:opacity-100 transition">Resi</span>
+                            </div>
+                            <div onclick="openImageModal('${item.fotoPokoyake}')" class="w-14 h-14 bg-gray-950 border border-gray-700 rounded-lg overflow-hidden cursor-pointer group relative flex-shrink-0">
+                                <img src="${item.fotoPokoyake}" class="w-full h-full object-cover" alt="Pokoyake">
+                                <span class="absolute inset-0 bg-black/50 flex items-center justify-center text-[9px] font-bold text-white opacity-0 group-hover:opacity-100 transition">Pokoyake</span>
+                            </div>
+                        </div>
+                        <div>
+                            <div class="flex items-center gap-2 mb-1">
+                                <span class="bg-orange-500/10 text-orange-400 border border-orange-500/30 text-[10px] font-bold px-2 py-0.5 rounded">${item.id}</span>
+                                <span class="${statusBadgeColor} border text-[10px] font-bold px-2 py-0.5 rounded">${item.status || 'Pending'}</span>
+                                <span class="text-xs text-gray-400">${item.tanggal}</span>
+                            </div>
+                            <h3 class="font-bold text-white uppercase text-base">${item.nama}</h3>
+                            <div class="text-xs text-gray-400 mt-0.5">
+                                AWB: <span class="text-gray-300 font-semibold">${item.noAwb}</span> &bull; Rider: <span class="text-gray-300 font-semibold">${item.idRider}</span>
+                            </div>
+                            <div class="text-[11px] text-gray-500 mt-1 flex items-center gap-1">
+                                <i class="fa-solid fa-location-dot text-orange-400"></i> ${item.lokasi || 'Batuceper, Tangerang'}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 self-end md:self-center">
+                        <button onclick="updateStatus('${item.id}', 'Approved')" title="Setujui Sanggahan" class="w-9 h-9 rounded-full bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center transition">
+                            <i class="fa-solid fa-circle-check text-lg"></i>
+                        </button>
+                        <button onclick="updateStatus('${item.id}', 'Rejected')" title="Tolak Sanggahan" class="w-9 h-9 rounded-full bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 flex items-center justify-center transition">
+                            <i class="fa-solid fa-circle-xmark text-lg"></i>
+                        </button>
+                        <button onclick="deleteItem('${item.id}')" title="Hapus Data" class="w-9 h-9 rounded-full bg-gray-800 hover:bg-rose-900/40 text-gray-400 hover:text-rose-400 border border-gray-700 transition flex items-center justify-center">
+                            <i class="fa-regular fa-trash-can text-sm"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            }).join('');
+        }
+
+        function filterData() {
+            const keyword = document.getElementById('searchInput').value.toLowerCase();
+            const statusFilter = document.getElementById('filterStatus').value;
+            const startDate = document.getElementById('filterStart').value;
+
+            const filtered = globalDataList.filter(item => {
+                const matchKeyword = (item.nama + item.idRider + item.noAwb + item.id).toLowerCase().includes(keyword);
+                const matchStatus = statusFilter === "" || item.status === statusFilter;
+                const matchDate = startDate === "" || item.tanggal === startDate;
+                return matchKeyword && matchStatus && matchDate;
+            });
+
+            renderDashboard(filtered);
+        }
+
+        function exportCSV() {
+            let csvContent = "data:text/csv;charset=utf-8,ID,Timestamp,Nama,ID Rider,Tanggal,No AWB,Link Resi,Link Pokoyake,Lokasi,Status\n";
+            globalDataList.forEach(row => {
+                csvContent += `"${row.id}","${row.timestamp}","${row.nama}","${row.idRider}","${row.tanggal}","${row.noAwb}","${row.fotoResi}","${row.fotoPokoyake}","${row.lokasi}","${row.status}"\n`;
+            });
+            const encodedUri = encodeURI(csvContent);
+            const link = document.createElement("a");
+            link.setAttribute("href", encodedUri);
+            link.setAttribute("download", "data_sanggahan_bulky.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+</body>
+</html>
